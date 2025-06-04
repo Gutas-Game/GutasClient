@@ -1,0 +1,144 @@
+/* Game History Styles */
+.game-history {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    max-width: 600px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.history-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.player-history {
+    color: #1976d2;
+    font-weight: 700;
+    margin-right: 0.5rem;
+    text-shadow: 0 1px 2px #fff, 0 0px 2px #1976d2;
+}
+
+.opponent-history {
+    color: #c62828;
+    font-weight: 700;
+    margin-left: 0.5rem;
+    text-shadow: 0 1px 2px #fff, 0 0px 2px #c62828;
+}
+
+.vs-history {
+    color: #333;
+    font-size: 1rem;
+    margin: 0 0.5rem;
+    font-weight: 700;
+    text-shadow: 0 1px 2px #fff;
+}
+
+.round-number {
+    min-width: 80px;
+    font-weight: 900;
+    color: #4a148c;
+    text-shadow: 0 1px 2px #fff, 0 0px 2px #4a148c;
+}
+
+.game-over {
+    max-width: 700px;
+}
+
+.game-over .game-history {
+    margin: 2rem auto;
+}
+
+.result-emoji {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+    from {
+        transform: translateY(0px);
+    }
+
+    to {
+        transform: translateY(-10px);
+    }
+}
+
+.choices-history {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 0.5rem;
+}
+
+.choice-icon {
+    font-size: 1.2rem;
+    display: inline-block;
+    margin-left: 5px;
+    transition: transform 0.3s ease;
+}
+
+.history-item:hover .choice-icon {
+    transform: scale(1.2);
+}
+
+.result-badge {
+    min-width: 70px;
+    text-align: center;
+    padding: 0.3rem 0.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.result-badge.win {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+}
+
+.result-badge.lose {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+}
+
+.result-badge.tie {
+    background: rgba(255, 193, 7, 0.2);
+    color: #FFC107;
+}
+
+@media (max-width: 600px) {
+    .history-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+
+    .choices-history {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .result-badge {
+        align-self: flex-end;
+    }
+}

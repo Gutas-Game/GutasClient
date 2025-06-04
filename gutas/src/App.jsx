@@ -5,6 +5,9 @@ import Swal from "sweetalert2";
 import LoginWaiting from "./components/LoginWaiting";
 import GamePlaying from "./components/GamePlaying";
 import GameOver from "./components/GameOver";
+import './App.css'
+import './historyStyles.css'
+import './styles/themes.css'
 
 function App() {
   const navigate = useNavigate();
