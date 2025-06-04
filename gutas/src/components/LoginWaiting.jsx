@@ -14,11 +14,10 @@ function LoginWaiting({
   roomId,
   opponentName,
   setGameState,
-}) {
-  const navigate = useNavigate();
+}) {  const navigate = useNavigate();
   const { currentTheme, changeTheme, getAvailableThemes, cycleTheme } =
     useTheme();
-
+  
   useEffect(() => {
     if (gameState === "playing") {
       navigate("/game");

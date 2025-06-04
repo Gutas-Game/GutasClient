@@ -2,12 +2,15 @@ import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router";
 import io from "socket.io-client";
 import Swal from "sweetalert2";
+import { MusicProvider } from "./contexts/MusicContext";
 import LoginWaiting from "./components/LoginWaiting";
 import GamePlaying from "./components/GamePlaying";
 import GameOver from "./components/GameOver";
-import './App.css'
-import './historyStyles.css'
-import './styles/themes.css'
+import MusicControls from "./components/MusicControls";
+import "./App.css";
+import "./historyStyles.css";
+import "./styles/themes.css";
+import "./styles/music.css";
 
 function App() {
   const navigate = useNavigate();
@@ -134,62 +137,65 @@ function App() {
   };
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <LoginWaiting
-            socket={socket}
-            gameState={gameState}
-            username={username}
-            setUsername={setUsername}
-            roomId={roomId}
-            opponentName={opponentName}
-            setGameState={setGameState}
-          />
-        }
-      />
-      <Route
-        path="/game"
-        element={
-          <GamePlaying
-            socket={socket}
-            gameState={gameState}
-            username={username}
-            opponentName={opponentName}
-            roomId={roomId}
-            currentRound={currentRound}
-            setCurrentRound={setCurrentRound}
-            playerChoice={playerChoice}
-            setPlayerChoice={setPlayerChoice}
-            opponentChoice={opponentChoice}
-            setOpponentChoice={setOpponentChoice}
-            scores={scores}
-            setScores={setScores}
-            gameHistory={gameHistory}
-            setGameHistory={setGameHistory}
-            roundResult={roundResult}
-            setRoundResult={setRoundResult}
-            isWaitingForOpponent={isWaitingForOpponent}
-            setIsWaitingForOpponent={setIsWaitingForOpponent}
-            setGameState={setGameState}
-          />
-        }
-      />
-      <Route
-        path="/gameover"
-        element={
-          <GameOver
-            gameState={gameState}
-            username={username}
-            opponentName={opponentName}
-            scores={scores}
-            gameHistory={gameHistory}
-            resetGame={resetGame}
-          />
-        }
-      />
-    </Routes>
+    <MusicProvider>
+      <MusicControls />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <LoginWaiting
+              socket={socket}
+              gameState={gameState}
+              username={username}
+              setUsername={setUsername}
+              roomId={roomId}
+              opponentName={opponentName}
+              setGameState={setGameState}
+            />
+          }
+        />
+        <Route
+          path="/game"
+          element={
+            <GamePlaying
+              socket={socket}
+              gameState={gameState}
+              username={username}
+              opponentName={opponentName}
+              roomId={roomId}
+              currentRound={currentRound}
+              setCurrentRound={setCurrentRound}
+              playerChoice={playerChoice}
+              setPlayerChoice={setPlayerChoice}
+              opponentChoice={opponentChoice}
+              setOpponentChoice={setOpponentChoice}
+              scores={scores}
+              setScores={setScores}
+              gameHistory={gameHistory}
+              setGameHistory={setGameHistory}
+              roundResult={roundResult}
+              setRoundResult={setRoundResult}
+              isWaitingForOpponent={isWaitingForOpponent}
+              setIsWaitingForOpponent={setIsWaitingForOpponent}
+              setGameState={setGameState}
+            />
+          }
+        />
+        <Route
+          path="/gameover"
+          element={
+            <GameOver
+              gameState={gameState}
+              username={username}
+              opponentName={opponentName}
+              scores={scores}
+              gameHistory={gameHistory}
+              resetGame={resetGame}
+            />
+          }
+        />
+      </Routes>
+    </MusicProvider>
   );
 }
 
