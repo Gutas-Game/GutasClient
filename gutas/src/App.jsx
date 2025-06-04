@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate } from "react-router";
 import io from "socket.io-client";
 import Swal from "sweetalert2";
 import LoginWaiting from "./components/LoginWaiting";
-
+import GamePlaying from "./components/GamePlaying";
 
 function App() {
   const navigate = useNavigate();
@@ -11,8 +11,14 @@ function App() {
   const [username, setUsername] = useState("");
   const [gameState, setGameState] = useState("login");
   const [roomId, setRoomId] = useState("");
+  const [currentRound, setCurrentRound] = useState(1);
+  const [playerChoice, setPlayerChoice] = useState("");
+  const [opponentChoice, setOpponentChoice] = useState("");
+  const [scores, setScores] = useState({ player: 0, opponent: 0 });
+  const [gameHistory, setGameHistory] = useState([]);
+  const [roundResult, setRoundResult] = useState("");
   const [opponentName, setOpponentName] = useState("");
-
+  const [isWaitingForOpponent, setIsWaitingForOpponent] = useState(false);
 
   useEffect(() => {
     const newSocket = io("http://localhost:3001");
@@ -34,7 +40,9 @@ function App() {
     newSocket.on("gameStart", (data) => {
       setOpponentName(data.opponentName);
       setGameState("playing");
-
+      setCurrentRound(1);
+      setScores({ player: 0, opponent: 0 });
+      setGameHistory([]);
 
       Swal.fire({
         title: "Game Started!",
@@ -43,6 +51,34 @@ function App() {
         confirmButtonText: "Start Playing!",
         confirmButtonColor: "#28a745",
       });
+    });
+
+    newSocket.on("roundResult", (data) => {
+      setOpponentChoice(data.opponentChoice);
+      setRoundResult(data.result);
+      setScores(data.scores);
+      setGameHistory((prev) => [
+        ...prev,
+        {
+          round: currentRound,
+          playerChoice: data.playerChoice,
+          opponentChoice: data.opponentChoice,
+          result: data.result,
+        },
+      ]);
+      setIsWaitingForOpponent(false);
+      setTimeout(() => {
+        if (currentRound >= 7) {
+          // Game selesai setelah round 7
+          setGameState("finished");
+        } else {
+          // Lanjut ke round berikutnya
+          setCurrentRound((prev) => prev + 1);
+          setPlayerChoice("");
+          setOpponentChoice("");
+          setRoundResult("");
+        }
+      }, 3000);
     });
 
     newSocket.on("opponentDisconnected", () => {
@@ -61,10 +97,26 @@ function App() {
     return () => newSocket.close();
   }, []);
 
+  // Navigation effect based on game state
+  useEffect(() => {
+    if (gameState === "playing") {
+      navigate("/game");
+    } else if (gameState === "finished") {
+      navigate("/gameover");
+    } else if (gameState === "login" || gameState === "waiting") {
+      navigate("/");
+    }
+  }, [gameState, navigate]);
 
   const resetGame = () => {
     setGameState("login");
     setUsername("");
+    setCurrentRound(1);
+    setPlayerChoice("");
+    setOpponentChoice("");
+    setScores({ player: 0, opponent: 0 });
+    setGameHistory([]);
+    setRoundResult("");
     setOpponentName("");
   };
 
@@ -84,7 +136,33 @@ function App() {
           />
         }
       />
-
+      <Route
+        path="/game"
+        element={
+          <GamePlaying
+            socket={socket}
+            gameState={gameState}
+            username={username}
+            opponentName={opponentName}
+            roomId={roomId}
+            currentRound={currentRound}
+            setCurrentRound={setCurrentRound}
+            playerChoice={playerChoice}
+            setPlayerChoice={setPlayerChoice}
+            opponentChoice={opponentChoice}
+            setOpponentChoice={setOpponentChoice}
+            scores={scores}
+            setScores={setScores}
+            gameHistory={gameHistory}
+            setGameHistory={setGameHistory}
+            roundResult={roundResult}
+            setRoundResult={setRoundResult}
+            isWaitingForOpponent={isWaitingForOpponent}
+            setIsWaitingForOpponent={setIsWaitingForOpponent}
+            setGameState={setGameState}
+          />
+        }
+      />
     </Routes>
   );
 }
