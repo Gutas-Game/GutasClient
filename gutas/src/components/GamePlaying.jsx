@@ -48,47 +48,6 @@ function GamePlaying({
     }
   }, [gameState, navigate])  
   
-  const generateAIRecommendation = async () => {
-    try {
-      setIsLoadingAI(true);
-      setAiError('');
-      
-      // Call API endpoint menggunakan axios langsung
-      const response = await axios.post('http://localhost:3001/api/ai-recommendation', {
-        gameHistory,
-        currentRound,
-        playerName: username,
-        opponentName
-      }, {
-        timeout: 10000 // 10 detik timeout
-      });
-
-      setAiRecommendation(response.data.recommendation || '');
-      
-    } catch (error) {
-      console.error('Error generating AI recommendation:', error);
-      
-      if (error.code === 'ECONNABORTED') {
-        setAiError('AI request timeout');
-      } else if (error.response) {
-        setAiError(`AI server error: ${error.response.status}`);
-      } else if (error.request) {
-        setAiError('Cannot connect to AI server');
-      } else {
-        setAiError('AI temporarily unavailable');
-      }
-      
-      setAiRecommendation('');
-    } finally {
-      setIsLoadingAI(false);
-    }
-  }
-
-  useEffect(() => {
-    if (currentRound >= 3 && gameHistory.length >= 2) {
-      generateAIRecommendation();
-    }
-  }, [currentRound, gameHistory])
 
   const makeChoice = (choice) => {
     setPlayerChoice(choice)

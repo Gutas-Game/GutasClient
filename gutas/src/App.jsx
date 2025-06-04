@@ -4,6 +4,7 @@ import io from "socket.io-client";
 import Swal from "sweetalert2";
 import LoginWaiting from "./components/LoginWaiting";
 import GamePlaying from "./components/GamePlaying";
+import GameOver from "./components/GameOver";
 
 function App() {
   const navigate = useNavigate();
@@ -79,6 +80,15 @@ function App() {
           setRoundResult("");
         }
       }, 3000);
+    });
+
+    newSocket.on("gameOver", (data) => {
+      // Server memberitahu game selesai
+      console.log("Game Over received:", data);
+      setGameState("finished");
+      if (data.finalScores) {
+        setScores(data.finalScores);
+      }
     });
 
     newSocket.on("opponentDisconnected", () => {
@@ -160,6 +170,19 @@ function App() {
             isWaitingForOpponent={isWaitingForOpponent}
             setIsWaitingForOpponent={setIsWaitingForOpponent}
             setGameState={setGameState}
+          />
+        }
+      />
+      <Route
+        path="/gameover"
+        element={
+          <GameOver
+            gameState={gameState}
+            username={username}
+            opponentName={opponentName}
+            scores={scores}
+            gameHistory={gameHistory}
+            resetGame={resetGame}
           />
         }
       />
