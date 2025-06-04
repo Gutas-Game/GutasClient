@@ -10,31 +10,31 @@ import batu from '../assets/batu.png'
 const CHOICES = ['rock', 'paper', 'scissors']
 const CHOICE_EMOJIS = {
   rock: <img src={batu} alt="" />,
-  paper: <img src={kertas} alt="" />, 
+  paper: <img src={kertas} alt="" />,
   scissors: <img src={gunting} alt="" />
 }
 
-function GamePlaying({ 
-  socket, 
-  gameState, 
-  username, 
-  opponentName, 
-  roomId, 
-  currentRound, 
+function GamePlaying({
+  socket,
+  gameState,
+  username,
+  opponentName,
+  roomId,
+  currentRound,
   setCurrentRound,
-  playerChoice, 
+  playerChoice,
   setPlayerChoice,
-  opponentChoice, 
+  opponentChoice,
   setOpponentChoice,
-  scores, 
+  scores,
   setScores,
-  gameHistory, 
+  gameHistory,
   setGameHistory,
-  roundResult, 
+  roundResult,
   setRoundResult,
-  isWaitingForOpponent, 
+  isWaitingForOpponent,
   setIsWaitingForOpponent,
-  setGameState 
+  setGameState
 }) {
   const navigate = useNavigate()
   const { cycleTheme, currentTheme } = useTheme()
@@ -46,8 +46,49 @@ function GamePlaying({
     if (gameState === 'finished') {
       navigate('/gameover')
     }
-  }, [gameState, navigate])  
-  
+  }, [gameState, navigate])
+
+  const generateAIRecommendation = async () => {
+    try {
+      setIsLoadingAI(true);
+      setAiError('');
+
+      // Call API endpoint menggunakan axios langsung
+      const response = await axios.post('http://localhost:3001/api/ai-recommendation', {
+        gameHistory,
+        currentRound,
+        playerName: username,
+        opponentName
+      }, {
+        timeout: 10000 // 10 detik timeout
+      });
+
+      setAiRecommendation(response.data.recommendation || '');
+
+    } catch (error) {
+      console.error('Error generating AI recommendation:', error);
+
+      if (error.code === 'ECONNABORTED') {
+        setAiError('AI request timeout');
+      } else if (error.response) {
+        setAiError(`AI server error: ${error.response.status}`);
+      } else if (error.request) {
+        setAiError('Cannot connect to AI server');
+      } else {
+        setAiError('AI temporarily unavailable');
+      }
+
+      setAiRecommendation('');
+    } finally {
+      setIsLoadingAI(false);
+    }
+  }
+
+  useEffect(() => {
+    if (currentRound >= 3 && gameHistory.length >= 2) {
+      generateAIRecommendation();
+    }
+  }, [currentRound, gameHistory])
 
   const makeChoice = (choice) => {
     setPlayerChoice(choice)
@@ -56,7 +97,7 @@ function GamePlaying({
   }
 
   const getResultText = (result) => {
-    switch(result) {
+    switch (result) {
       case 'win': return 'You Win! 🎉'
       case 'lose': return 'You Lose! 😢'
       case 'tie': return 'It\'s a Tie! 🤝'
@@ -68,7 +109,7 @@ function GamePlaying({
   useEffect(() => {
     if (roundResult && playerChoice && opponentChoice) {
       const getResultConfig = (result) => {
-        switch(result) {
+        switch (result) {
           case 'win':
             return {
               title: 'You Win! 🎉',
@@ -115,8 +156,8 @@ function GamePlaying({
     <div className="app">
       {/* Floating Theme Controls */}
       <div className="theme-controls-floating">
-        <button 
-          className="theme-cycle-btn" 
+        <button
+          className="theme-cycle-btn"
           onClick={cycleTheme}
           title={`Current theme: ${currentTheme}`}
         >
@@ -132,14 +173,14 @@ function GamePlaying({
             <span>{opponentName}: {scores.opponent}</span>
           </div>
         </div>
-        
+
         {currentRound >= 3 && (isLoadingAI || aiRecommendation || aiError) && (
           <div className="ai-recommendation">
             <h3>🤖 Personalized AI Recommendation for {username}</h3>
             {isLoadingAI ? (
               <p className="loading">🔄 AI is analyzing {opponentName}'s patterns for you...</p>
             ) : aiError ? (
-              <p style={{color: '#ff9800'}}>⚠️ {aiError} - Using personalized pattern analysis</p>
+              <p style={{ color: '#ff9800' }}>⚠️ {aiError} - Using personalized pattern analysis</p>
             ) : (
               <p><strong>{CHOICE_EMOJIS[aiRecommendation]} </strong></p>
             )}
@@ -181,7 +222,7 @@ function GamePlaying({
               <div className="result">
                 <h3>{getResultText(roundResult)}</h3>
               </div>
-            )}              
+            )}
             {isWaitingForOpponent && (
               <p>Waiting for opponent's choice...</p>
             )}
