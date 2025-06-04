@@ -1,35 +1,92 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router";
+import io from "socket.io-client";
+import Swal from "sweetalert2";
+import LoginWaiting from "./components/LoginWaiting";
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const navigate = useNavigate();
+  const [socket, setSocket] = useState(null);
+  const [username, setUsername] = useState("");
+  const [gameState, setGameState] = useState("login");
+  const [roomId, setRoomId] = useState("");
+  const [opponentName, setOpponentName] = useState("");
+
+
+  useEffect(() => {
+    const newSocket = io("http://localhost:3001");
+    setSocket(newSocket);
+
+    newSocket.on("gameJoined", (data) => {
+      setRoomId(data.roomId);
+      setGameState("waiting");
+
+      Swal.fire({
+        title: "Successfully Joined!",
+        text: `Room ID: ${data.roomId}. Waiting for opponent...`,
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    });
+
+    newSocket.on("gameStart", (data) => {
+      setOpponentName(data.opponentName);
+      setGameState("playing");
+
+
+      Swal.fire({
+        title: "Game Started!",
+        text: `Your opponent is ${data.opponentName}. Let the battle begin!`,
+        icon: "success",
+        confirmButtonText: "Start Playing!",
+        confirmButtonColor: "#28a745",
+      });
+    });
+
+    newSocket.on("opponentDisconnected", () => {
+      Swal.fire({
+        title: "Opponent Disconnected!",
+        text: "Your opponent has left the game. You will be redirected to the main page.",
+        icon: "warning",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#3085d6",
+      }).then(() => {
+        resetGame();
+        navigate("/");
+      });
+    });
+
+    return () => newSocket.close();
+  }, []);
+
+
+  const resetGame = () => {
+    setGameState("login");
+    setUsername("");
+    setOpponentName("");
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <LoginWaiting
+            socket={socket}
+            gameState={gameState}
+            username={username}
+            setUsername={setUsername}
+            roomId={roomId}
+            opponentName={opponentName}
+            setGameState={setGameState}
+          />
+        }
+      />
+
+    </Routes>
+  );
 }
 
-export default App
+export default App;
