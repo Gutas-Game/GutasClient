@@ -126,7 +126,7 @@ const [aiRecommendation, setAiRecommendation] = useState('') // Rekomendasi AI
 #### **Socket Event Listeners**
 ```javascript
 useEffect(() => {
-  const newSocket = io('http://localhost:3001')
+  const newSocket = io('https://hck.duniahabbib.site')
   
   newSocket.on('gameJoined', (data) => {
     // Bergabung ke room / menunggu lawan
@@ -296,7 +296,7 @@ const generateAIRecommendation = () => {
    # atau untuk development:
    npm run dev
    ```
-   Server akan berjalan di `http://localhost:3001`
+   Server akan berjalan di `http://localhost:3001` 
 
 5. **Jalankan Client (Terminal 2)**
    ```bash

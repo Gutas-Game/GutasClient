@@ -54,7 +54,7 @@ function GamePlaying({
       setAiError('');
 
       // Call API endpoint menggunakan axios langsung
-      const response = await axios.post('http://localhost:3001/api/ai-recommendation', {
+      const response = await axios.post('https://hck.duniahabbib.site/api/ai-recommendation', {
         gameHistory,
         currentRound,
         playerName: username,
