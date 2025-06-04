@@ -1,0 +1,139 @@
+/* Game History Styles */
+.game-history {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    max-width: 600px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1rem;
+    text-align: left;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.history-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.round-number {
+    font-weight: bold;
+    color: #7B1FA2;
+    min-width: 70px;
+}
+
+.player-history {
+    color: #2196F3;
+    font-weight: 500;
+    margin-right: 0.5rem;
+}
+
+.opponent-history {
+    color: #E53935;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}
+
+.vs-history {
+    color: #757575;
+    font-size: 0.9rem;
+    margin: 0 0.5rem;
+}
+
+.choice-details {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+}
+
+.result-badge {
+    min-width: 70px;
+    text-align: center;
+    padding: 0.3rem 0.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.result-badge.win {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+}
+
+.result-badge.lose {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+}
+
+.result-badge.tie {
+    background: rgba(255, 193, 7, 0.2);
+    color: #FFC107;
+}
+
+/* Game Over Screen */
+.game-over {
+    width: 100%;
+    max-width: 700px;
+}
+
+.result-emoji {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+    from {
+        transform: translateY(0px);
+    }
+
+    to {
+        transform: translateY(-10px);
+    }
+}
+
+.game-summary {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    text-align: left;
+}
+
+.game-summary h3 {
+    grid-column: span 2;
+    margin-top: 0;
+    text-align: center;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.summary-label {
+    color: #B0BEC5;
+}
+
+.summary-value {
+    font-weight: bold;
+}
