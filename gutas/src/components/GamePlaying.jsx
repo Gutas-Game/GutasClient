@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router'
 import Swal from 'sweetalert2'
 import axios from 'axios'
 import { useTheme } from '../contexts/ThemeContext'
+import { useMusic } from '../contexts/MusicContext'
 import kertas from '../assets/kertas.png'
 import gunting from '../assets/gunting.png'
 import batu from '../assets/batu.png'
@@ -10,49 +11,58 @@ import batu from '../assets/batu.png'
 const CHOICES = ['rock', 'paper', 'scissors']
 const CHOICE_EMOJIS = {
   rock: <img src={batu} alt="" />,
-  paper: <img src={kertas} alt="" />,
+  paper: <img src={kertas} alt="" />, 
   scissors: <img src={gunting} alt="" />
 }
 
-function GamePlaying({
-  socket,
-  gameState,
-  username,
-  opponentName,
-  roomId,
-  currentRound,
+function GamePlaying({ 
+  socket, 
+  gameState, 
+  username, 
+  opponentName, 
+  roomId, 
+  currentRound, 
   setCurrentRound,
-  playerChoice,
+  playerChoice, 
   setPlayerChoice,
-  opponentChoice,
+  opponentChoice, 
   setOpponentChoice,
-  scores,
+  scores, 
   setScores,
-  gameHistory,
+  gameHistory, 
   setGameHistory,
-  roundResult,
+  roundResult, 
   setRoundResult,
-  isWaitingForOpponent,
+  isWaitingForOpponent, 
   setIsWaitingForOpponent,
-  setGameState
+  setGameState 
 }) {
   const navigate = useNavigate()
   const { cycleTheme, currentTheme } = useTheme()
+  const { playGameMusic, stopGameMusic } = useMusic()
   const [aiRecommendation, setAiRecommendation] = useState('')
   const [isLoadingAI, setIsLoadingAI] = useState(false)
   const [aiError, setAiError] = useState('')
 
+  // Start game music when component mounts
+  useEffect(() => {
+    if (gameState === 'playing') {
+      playGameMusic()
+    }
+  }, [gameState, playGameMusic])
+
   useEffect(() => {
     if (gameState === 'finished') {
+      stopGameMusic()
       navigate('/gameover')
     }
-  }, [gameState, navigate])
-
+  }, [gameState, navigate, stopGameMusic])
+  
   const generateAIRecommendation = async () => {
     try {
       setIsLoadingAI(true);
       setAiError('');
-
+      
       // Call API endpoint menggunakan axios langsung
       const response = await axios.post('https://hck.duniahabbib.site/api/ai-recommendation', {
         gameHistory,
@@ -64,10 +74,10 @@ function GamePlaying({
       });
 
       setAiRecommendation(response.data.recommendation || '');
-
+      
     } catch (error) {
       console.error('Error generating AI recommendation:', error);
-
+      
       if (error.code === 'ECONNABORTED') {
         setAiError('AI request timeout');
       } else if (error.response) {
@@ -77,7 +87,7 @@ function GamePlaying({
       } else {
         setAiError('AI temporarily unavailable');
       }
-
+      
       setAiRecommendation('');
     } finally {
       setIsLoadingAI(false);
@@ -97,19 +107,17 @@ function GamePlaying({
   }
 
   const getResultText = (result) => {
-    switch (result) {
+    switch(result) {
       case 'win': return 'You Win! 🎉'
       case 'lose': return 'You Lose! 😢'
       case 'tie': return 'It\'s a Tie! 🤝'
       default: return ''
     }
-  }
-
-  // Show SweetAlert2 for round results
+  }  // Show SweetAlert2 for round results
   useEffect(() => {
     if (roundResult && playerChoice && opponentChoice) {
       const getResultConfig = (result) => {
-        switch (result) {
+        switch(result) {
           case 'win':
             return {
               title: 'You Win! 🎉',
@@ -156,8 +164,8 @@ function GamePlaying({
     <div className="app">
       {/* Floating Theme Controls */}
       <div className="theme-controls-floating">
-        <button
-          className="theme-cycle-btn"
+        <button 
+          className="theme-cycle-btn" 
           onClick={cycleTheme}
           title={`Current theme: ${currentTheme}`}
         >
@@ -173,14 +181,14 @@ function GamePlaying({
             <span>{opponentName}: {scores.opponent}</span>
           </div>
         </div>
-
+        
         {currentRound >= 3 && (isLoadingAI || aiRecommendation || aiError) && (
           <div className="ai-recommendation">
             <h3>🤖 Personalized AI Recommendation for {username}</h3>
             {isLoadingAI ? (
               <p className="loading">🔄 AI is analyzing {opponentName}'s patterns for you...</p>
             ) : aiError ? (
-              <p style={{ color: '#ff9800' }}>⚠️ {aiError} - Using personalized pattern analysis</p>
+              <p style={{color: '#ff9800'}}>⚠️ {aiError} - Using personalized pattern analysis</p>
             ) : (
               <p><strong>{CHOICE_EMOJIS[aiRecommendation]} </strong></p>
             )}
@@ -222,7 +230,7 @@ function GamePlaying({
               <div className="result">
                 <h3>{getResultText(roundResult)}</h3>
               </div>
-            )}
+            )}              
             {isWaitingForOpponent && (
               <p>Waiting for opponent's choice...</p>
             )}
