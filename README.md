@@ -126,7 +126,7 @@ const [aiRecommendation, setAiRecommendation] = useState('') // Rekomendasi AI
 #### **Socket Event Listeners**
 ```javascript
 useEffect(() => {
-  const newSocket = io('http://localhost:3001')
+  const newSocket = io('https://hck.duniahabbib.site')
   
   newSocket.on('gameJoined', (data) => {
     // Bergabung ke room / menunggu lawan
@@ -233,7 +233,7 @@ const generateAIRecommendation = () => {
 ## 🎮 Alur Permainan
 
 ### 1. **Login Phase**
-1. User membuka `http://localhost:5173`
+1. User membuka `http://localhost:5173` / `https://hck.duniahabbib.site`
 2. Memasukkan username
 3. Klik "Join Game"
 4. Socket terhubung ke server
@@ -296,7 +296,7 @@ const generateAIRecommendation = () => {
    # atau untuk development:
    npm run dev
    ```
-   Server akan berjalan di `http://localhost:3001`
+   Server akan berjalan di `http://localhost:3001` / `https://hck.duniahabbib.site`
 
 5. **Jalankan Client (Terminal 2)**
    ```bash

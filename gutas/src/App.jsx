@@ -25,7 +25,7 @@ function App() {
   const [isWaitingForOpponent, setIsWaitingForOpponent] = useState(false);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:3001");
+    const newSocket = io("https://hck.duniahabbib.site");
     setSocket(newSocket);
 
     newSocket.on("gameJoined", (data) => {
