@@ -1,0 +1,92 @@
+/* Music Controls Styles */
+.music-controls {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px 12px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  color: white;
+  font-size: 14px;
+}
+
+.music-toggle {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.music-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.music-toggle.muted {
+  opacity: 0.6;
+}
+
+
+
+.music-indicator {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+}
+
+.music-note {
+  font-size: 16px;
+  animation: musicPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes musicPulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .music-controls {
+    top: 10px;
+    left: 10px;
+    padding: 6px 10px;
+  }
+}
+
+/* Theme-based adjustments */
+.theme-dark .music-controls {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.theme-light .music-controls {
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+}
+
+.theme-neon .music-controls {
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid cyan;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  color: cyan;
+}
+
+.theme-retro .music-controls {
+  background: rgba(139, 69, 19, 0.8);
+  border: 2px solid #8B4513;
+  color: #F4A460;
+}
